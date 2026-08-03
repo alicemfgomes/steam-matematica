@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matemática</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #34215A;
+    --bg-2: #34215A;
+    --cream: #F7F3E9;
+    --ink: #17233A;
+    --yellow: #F6AE2D;
+    --pink: #FF3EA5;
+    --purple: #7B2FF7;
+    --teal: #2EC4B6;
+    --orange: #FF7A2F;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: 'Nunito', sans-serif;
+    color: var(--ink);
+    background: var(--bg-1);
+    overflow-x: hidden;
+    padding: 22px 16px 40px;
+    position: relative;
+  }
+
+  /* ---- AMBIENT FLOATING MATH SYMBOLS (decorative) ---- */
+  .sky {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .sky span {
+    position: absolute;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    color: #fff;
+    opacity: .10;
+    user-select: none;
+    animation: drift linear infinite;
+    will-change: transform;
+  }
+  .sky span:nth-child(1){ left: 6%;  top: 12%; font-size: 3.4rem; animation-duration: 26s; }
+  .sky span:nth-child(2){ left: 82%; top: 8%;  font-size: 4.2rem; animation-duration: 32s; animation-direction: reverse; }
+  .sky span:nth-child(3){ left: 20%; top: 70%; font-size: 3rem;   animation-duration: 29s; }
+  .sky span:nth-child(4){ left: 70%; top: 62%; font-size: 5rem;   animation-duration: 38s; animation-direction: reverse; }
+  .sky span:nth-child(5){ left: 45%; top: 30%; font-size: 2.6rem; animation-duration: 24s; }
+  .sky span:nth-child(6){ left: 90%; top: 82%; font-size: 3.6rem; animation-duration: 34s; }
+  .sky span:nth-child(7){ left: 4%;  top: 48%; font-size: 4rem;   animation-duration: 30s; animation-direction: reverse; }
+  .sky span:nth-child(8){ left: 55%; top: 88%; font-size: 2.8rem; animation-duration: 27s; }
+
+  @keyframes drift {
+    0%   { transform: translateY(0) rotate(0deg); }
+    50%  { transform: translateY(-26px) rotate(12deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+
+  /* ---- TITLE (arcade marquee sticker) ---- */
+  .title-container { display: flex; }
+
+  .title {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2.9rem, 13vw, 5.4rem);
+    line-height: 1.12;
+    color: var(--yellow);
+    letter-spacing: -1px;
+    padding: 6px 2px;
+    text-shadow:
+      0 4px 0 rgba(0,0,0,.18),
+      -2px 0 0 #fff2, 2px 0 0 #fff2;
+  }
+
+  /* ---- GRID ---- */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* ---- CARD FLIP MECHANICS ---- */
+  .card-wrap {
+    perspective: 1200px;
+    min-height: 300px;
+    outline: none;
+    opacity: 0;
+    transform: translateY(22px) scale(.96);
+    animation: fadeUp .5s cubic-bezier(.18,1.1,.4,1) forwards;
+  }
+  .grid .card-wrap:nth-child(1){ --accent:#7B2FF7; --accent-soft:#efe6ff; animation-delay:.10s; }
+  .grid .card-wrap:nth-child(2){ --accent:#F6AE2D; --accent-soft:#fff2d6; animation-delay:.17s; }
+  .grid .card-wrap:nth-child(3){ --accent:#2EC4B6; --accent-soft:#d9f6f2; animation-delay:.24s; }
+  .grid .card-wrap:nth-child(4){ --accent:#FF3EA5; --accent-soft:#ffe0ef; animation-delay:.31s; }
+  .grid .card-wrap:nth-child(5){ --accent:#FF7A2F; --accent-soft:#ffe6d6; animation-delay:.38s; }
+  .grid .card-wrap:nth-child(6){ --accent:#7B2FF7; --accent-soft:#efe6ff; animation-delay:.45s; }
+
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0) scale(1); } }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+    transform-style: preserve-3d;
+    transition: transform .6s cubic-bezier(.34,1.4,.5,1);
+    cursor: pointer;
+  }
+  .card-wrap.flipped .card-inner { transform: rotateY(180deg); }
+
+  .card-wrap:focus-visible .card-inner {
+    outline: 3px dashed #fff;
+    outline-offset: 6px;
+    border-radius: 24px;
+  }
+
+  .card-front, .card-back {
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background: var(--cream);
+    overflow: hidden;
+    box-shadow: 0 10px 26px rgba(11,26,48,.34);
+  }
+
+  /* colored top band = ticket stub */
+  .card-front::before, .card-back::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 12px;
+    background: var(--accent);
+    z-index: 3;
+  }
+  /* ticket notches on the sides */
+  .card-front::after, .card-back::after {
+    content: "";
+    position: absolute;
+    top: 46px; left: -11px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--bg-1);
+    box-shadow: calc(100% + 22px) 0 0 var(--bg-1);
+    z-index: 4;
+  }
+
+  /* ---- FRONT ---- */
+  .card-front {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 40px 20px 24px;
+    text-align: center;
+  }
+
+  .card-front .emoji {
+    font-size: 3.1rem;
+    line-height: 1;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 86px; height: 86px;
+    border-radius: 24px;
+    background: var(--accent-soft);
+    box-shadow: 0 6px 0 rgba(0,0,0,.06), inset 0 0 0 3px #fff;
+    transform: rotate(-5deg);
+    transition: transform .3s cubic-bezier(.34,1.5,.5,1);
+    animation: bob 4s ease-in-out infinite;
+  }
+  @keyframes bob { 0%,100%{ transform: rotate(-5deg) translateY(0);} 50%{ transform: rotate(-5deg) translateY(-6px);} }
+
+  .card-wrap:hover .card-front .emoji {
+    transform: rotate(6deg) scale(1.12);
+  }
+
+  .card-front .label {
+    font-weight: 900;
+    font-size: 1.35rem;
+    color: var(--ink);
+    line-height: 1.22;
+    max-width: 22ch;
+  }
+
+  /* the "+" now a flip badge */
+  .plus-btn {
+    position: absolute;
+    top: 22px;
+    right: 16px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Space Mono', monospace;
+    font-size: 1.15rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform .25s cubic-bezier(.34,1.6,.5,1), box-shadow .2s;
+    z-index: 6;
+    line-height: 1;
+    box-shadow: 0 4px 10px rgba(0,0,0,.22);
+    animation: pulse 2.6s ease-in-out infinite;
+  }
+  .plus-btn:hover { transform: scale(1.18) rotate(90deg); }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 4px 10px rgba(0,0,0,.22), 0 0 0 0 var(--accent); }
+    50%     { box-shadow: 0 4px 10px rgba(0,0,0,.22), 0 0 0 7px transparent; }
+  }
+
+  /* ---- BACK ---- */
+  .card-back {
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 30px 22px 22px;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .card-back .back-icon {
+    font-size: 1.7rem;
+    filter: drop-shadow(0 3px 4px rgba(0,0,0,.18));
+    margin-bottom: 2px;
+    flex: 0 0 auto;
+  }
+
+  .card-back .back-text {
+    font-size: .96rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.55;
+    letter-spacing: .005em;
+    overflow-y: auto;
+    padding: 0 2px;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+  }
+  .card-back .back-text::-webkit-scrollbar { width: 5px; }
+  .card-back .back-text::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+
+  .card-back .back-hint {
+    font-family: 'Space Mono', monospace;
+    font-size: .68rem;
+    letter-spacing: .02em;
+    color: var(--accent);
+    text-transform: uppercase;
+    font-weight: 700;
+    flex: 0 0 auto;
+    padding-top: 4px;
+    border-top: 2px dashed rgba(23,35,58,.14);
+    width: 100%;
+  }
+
+  /* tap feedback */
+  .card-inner:active { filter: brightness(.98); }
+
+  /* ---- RESPONSIVE ---- */
+  @media (min-width: 620px) {
+    body { padding: 30px 24px 48px; }
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .card-wrap { min-height: 280px; }
+    .card-wrap:hover { z-index: 5; }
+    .card-wrap:hover .card-inner:not(.flipped) { transform: translateY(-6px) rotate(-1deg); }
+    .card-wrap.flipped:hover .card-inner { transform: rotateY(180deg) translateY(-6px) rotate(1deg); }
+  }
+
+  @media (min-width: 940px) {
+    .grid { grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .card-wrap { min-height: 300px; }
+    .card-front .label { font-size: 1.45rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .18s !important;
+    }
+    .card-wrap { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sky" aria-hidden="true">
+  <span>π</span><span>+</span><span>√</span><span>×</span><span>²</span><span>÷</span><span>∞</span><span>=</span>
+</div>
+
+<div class="wrap">
+
+  <div class="title-container">
+    <div class="title">Matemática</div>
+  </div>
+
+  <div class="grid">
+    <!-- Card 2 -->
+    <div class="card-wrap" id="c1" tabindex="0" role="button" aria-label="Virar cartão: Número PI" onclick="flip(event,'c1')" onkeydown="keyflip(event,'c1')">
+      <div class="card-inner">
+        <div class="card-front">
+          <button class="plus-btn" aria-label="Virar cartão" onclick="flip(event,'c1')">+</button>
+          <span class="emoji">π​</span>
+          <span class="label">Número PI</span>
+        </div>
+        <div class="card-back" onclick="flip(event,'c1')">
+          <span class="back-icon">π​</span>
+          <span class="back-text">O número PI é um número irracional, sendo uma dízima não periódica, possui infinitas casas decimais. Ele é encontrado quando dividimos o comprimento de uma circunferência pelo seu diâmetro.</span>
+          <span class="back-hint">Clique para voltar</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card-wrap" id="c2" tabindex="0" role="button" aria-label="Virar cartão: Potênciação" onclick="flip(event,'c2')" onkeydown="keyflip(event,'c2')">
+      <div class="card-inner">
+        <div class="card-front">
+          <button class="plus-btn" aria-label="Virar cartão" onclick="flip(event,'c2')">+</button>
+          <span class="emoji">📌</span>
+          <span class="label">Potênciação</span>
+        </div>
+        <div class="card-back" onclick="flip(event,'c2')">
+          <span class="back-icon">📌</span>
+          <span class="back-text">A potenciação é a operação matemática onde multiplicamos um número por ele mesmo, dizendo que ele  é elevado ao outro. Na potenciação 5^2, é chamada base o número abaixo (5), e o expoente o acima (2).</span>
+          <span class="back-hint">Clique para voltar</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="card-wrap" id="c3" tabindex="0" role="button" aria-label="Virar cartão: Números Primos" onclick="flip(event,'c3')" onkeydown="keyflip(event,'c3')">
+      <div class="card-inner">
+        <div class="card-front">
+          <button class="plus-btn" aria-label="Virar cartão" onclick="flip(event,'c3')">+</button>
+          <span class="emoji">🚀</span>
+          <span class="label">Números Primos</span>
+        </div>
+        <div class="card-back" onclick="flip(event,'c3')">
+          <span class="back-icon">🚀</span>
+          <span class="back-text">Números primos são números naturais não nulos que possuem apenas dois divisores, 1 e ele mesmo, sendo os demais compostos menos 1 e 0. Ex: 2,3,5,7,11,13,17,19...Eles podem formar todos os números compostos utilizando a decomposição em fatores primos, tendo um método parecido com o para calcular o  MMC e o MDC. Ex: 315=3x3x5x7.</span>
+          <span class="back-hint">Clique para voltar</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="card-wrap" id="c4" tabindex="0" role="button" aria-label="Virar cartão: Curiosidade" onclick="flip(event,'c4')" onkeydown="keyflip(event,'c4')">
+      <div class="card-inner">
+        <div class="card-front">
+          <button class="plus-btn" aria-label="Virar cartão" onclick="flip(event,'c4')">+</button>
+          <span class="emoji">😉</span>
+          <span class="label">Curiosidade</span>
+        </div>
+        <div class="card-back" onclick="flip(event,'c4')">
+          <span class="back-icon">😉</span>
+          <span class="back-text">Você sabia que no dia 6 de maio é celebrado o Dia Nacional da Matemática, em homenagem ao escritor Malba Tahan, escritor e  matemático autor lo livro "O Homem que Calculava"?(Recomendo lerem)</span>
+          <span class="back-hint">Clique para voltar</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="card-wrap" id="c5" tabindex="0" role="button" aria-label="Virar cartão: Desafio" onclick="flip(event,'c5')" onkeydown="keyflip(event,'c5')">
+      <div class="card-inner">
+        <div class="card-front">
+          <button class="plus-btn" aria-label="Virar cartão" onclick="flip(event,'c5')">+</button>
+          <span class="emoji">🎯</span>
+          <span class="label">Desafio: Qual é a decomposição em fatores primos do número 8732?</span>
+        </div>
+        <div class="card-back" onclick="flip(event,'c5')">
+          <span class="back-icon">🎯</span>
+          <span class="back-text">Resposta: 2x2x37x59</span>
+          <span class="back-hint">Clique para voltar</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 7 -->
+    <div class="card-wrap" id="c6" tabindex="0" role="button" aria-label="Virar cartão: Trabalho STEAM" onclick="flip(event,'c6')" onkeydown="keyflip(event,'c6')">
+      <div class="card-inner">
+        <div class="card-front">
+          <button class="plus-btn" aria-label="Virar cartão" onclick="flip(event,'c6')">+</button>
+          <span class="emoji">⭐</span>
+          <span class="label">Trabalho STEAM</span>
+        </div>
+        <div class="card-back" onclick="flip(event,'c6')">
+          <span class="back-icon">🤝</span>
+          <span class="back-text">Este é o trabalho STEAM da máquina de prêmios feito por Alice Gomes, Flora Legey, Helena Bagno, Isabela Monnerat, Valentina Gripp, Laís Maria e Gabriela Nascentes.</span>
+          <span class="back-hint">Clique para voltar</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function flip(e, id) {
+    e.stopPropagation();
+    document.getElementById(id).classList.toggle('flipped');
+  }
+  function keyflip(e, id) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      document.getElementById(id).classList.toggle('flipped');
+    }
+  }
+</script>
+</body>
+</html>
