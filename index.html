@@ -78,6 +78,59 @@
     gap: 26px;
   }
 
+  /* ---- HOME BUTTON (ticket-stub badge, matches card language) ---- */
+  .home-btn {
+    position: fixed;
+    top: 18px;
+    right: 16px;
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--cream);
+    color: var(--ink);
+    text-decoration: none;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: .92rem;
+    padding: 10px 16px 10px 12px;
+    border-radius: 999px;
+    box-shadow: 0 6px 0 rgba(0,0,0,.16), 0 8px 18px rgba(11,26,48,.28);
+    border: 3px solid var(--purple);
+    transition: transform .25s cubic-bezier(.34,1.5,.5,1), box-shadow .2s;
+  }
+  .home-btn .home-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--purple);
+    font-size: 1rem;
+    animation: bob 4s ease-in-out infinite;
+  }
+  .home-btn:hover {
+    transform: translateY(-3px) rotate(-1deg);
+    box-shadow: 0 8px 0 rgba(0,0,0,.16), 0 10px 22px rgba(11,26,48,.32);
+  }
+  .home-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 0 rgba(0,0,0,.16), 0 4px 10px rgba(11,26,48,.24);
+  }
+  .home-btn:focus-visible {
+    outline: 3px dashed var(--purple);
+    outline-offset: 4px;
+  }
+
+  @media (min-width: 620px) {
+    .home-btn { top: 24px; right: 24px; font-size: 1rem; padding: 11px 18px 11px 13px; }
+  }
+
+  /* leaves room so the fixed button never overlaps the title on small screens */
+  .title-container { padding-top: 46px; }
+  @media (min-width: 620px) { .title-container { padding-top: 0; } }
+
   /* ---- TITLE (arcade marquee sticker) ---- */
   .title-container { display: flex; }
 
@@ -319,6 +372,11 @@
 <div class="sky" aria-hidden="true">
   <span>π</span><span>+</span><span>√</span><span>×</span><span>²</span><span>÷</span><span>∞</span><span>=</span>
 </div>
+
+<a class="home-btn" href="https://alicemfgomes.github.io/steam/" aria-label="Voltar para a página inicial do trabalho STEAM">
+  <span class="home-icon">🏠</span>
+  Início
+</a>
 
 <div class="wrap">
 
